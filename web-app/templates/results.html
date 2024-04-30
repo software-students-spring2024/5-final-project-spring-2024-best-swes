@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bill Calculation Results</title>
+</head>
+<body>
+    <h1>Bill Calculation Results</h1>
+    <table border="1">
+        <tr>
+            <th>Person</th>
+            <th>Amount Due</th>
+        </tr>
+        {% for name, amount in payments.items() %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>${{ "%.2f"|format(amount) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Return Home</a>
+</body>
+</html>

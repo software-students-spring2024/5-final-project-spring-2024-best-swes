@@ -1,0 +1,6 @@
+pymongo
+pylint
+black
+requests
+Flask
+python-dotenv

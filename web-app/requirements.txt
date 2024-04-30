@@ -1,0 +1,8 @@
+Flask
+pymongo
+pylint
+black
+pytest
+coverage
+python-dotenv
+requests
