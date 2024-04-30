@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Allocate Food Items</title>
+</head>
+<body>
+    <h1>Allocate Food Items to Individuals</h1>
+    <form method="post">
+        {% for person in people %}
+            <h3>{{ person }}</h3> <!-- Ensure variable matches what's expected -->
+            {% for item in food_items %}
+                <div>
+                    <input type="checkbox" name="{{ person }}" value="{{ item._id }}"> <!-- Ensure the name field is correctly handled -->
+                    <label>{{ item.description }}</label> <!-- Adjusted to use a descriptive field -->
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

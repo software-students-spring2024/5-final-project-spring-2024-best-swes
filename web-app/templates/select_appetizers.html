@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Appetizers</title>
+</head>
+<body>
+    <h1>Select Appetizers</h1>
+    <form method="post">
+        <div>
+            <input type="checkbox" name="no_appetizers" id="no_appetizers" value="none" onclick="deselectOthers();">
+            <label for="no_appetizers">None</label>
+        </div>
+        {% for item in items %}
+        <div>
+            <input type="checkbox" name="appetizers" value="{{ item['_id'] }}" {% if item.get('is_appetizer', False) %} checked {% endif %}>
+            <label>{{ item['description'] }}</label>
+        </div>
+        {% endfor %}
+        <input type="submit" value="Submit">
+    </form>
+    <script>
+        function deselectOthers() {
+            const noneCheckbox = document.getElementById('no_appetizers');
+            const appetizerCheckboxes = document.querySelectorAll('input[name="appetizers"]');
+            if (noneCheckbox.checked) {
+                appetizerCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

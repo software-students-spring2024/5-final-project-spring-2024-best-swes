@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt History</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Receipt History</h2>
+    <form action="/history" method="get">
+        <label for="search">Search by Name:</label>
+        <input type="text" id="search" name="search" placeholder="Enter keyword">
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Search Results</h2>
+    {% if items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Is Appetizer</th>
+                    <th>Person Paying</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item['name'] }}</td>
+                        <td>${{ item['price'] }}</td>
+                        <td>{{ "Yes" if item['is_appetizer'] else "No" }}</td>
+                        <td>{{ item['person_paying']['name'] if item.get('person_paying') else "N/A" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>

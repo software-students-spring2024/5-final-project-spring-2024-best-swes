@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckMate Receipt Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Welcome to CheckMate</h1>
+
+    <!-- Camera and Image Capture Interface -->
+    <div id="camera-interface" style="display: none;">
+        <video id="video-stream" width="640" height="480" autoplay></video>
+        <canvas id="canvas" width="640" height="480"></canvas>
+    </div>
+
+    <div id="form-container" style="text-align: center; margin-top: 20px;">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="image">Upload Receipt:</label>
+            <input type="file" accept="image/*" capture="camera" id="image" name="image">
+            <button type="submit">Upload Receipt</button>
+        </form>
+        <button class="btn" onclick="startCamera()">Start Camera</button>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="location.href='/search_history'">Show History</button>
+    </div>
+
+    <script>
+      const video = document.getElementById("video-stream");
+      const canvas = document.getElementById("canvas");
+      const formContainer = document.getElementById("form-container");
+      const cameraInterface = document.getElementById("camera-interface");
+
+      function startCamera() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+            formContainer.style.display = "none";
+            cameraInterface.style.display = "block";
+          }).catch(function (error) {
+            console.error("There was an error opening your camera: ", error);
+          });
+      }
+
+      function captureImage() {
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL("image/jpeg");
+        document.getElementById("image").value = imageData; // Set the captured image as the value of the file input
+        formContainer.style.display = "block";
+        cameraInterface.style.display = "none";
+      }
+    </script>
+
+</body>
+</html>
