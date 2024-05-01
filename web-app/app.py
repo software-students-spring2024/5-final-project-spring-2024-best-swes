@@ -9,7 +9,7 @@ from bson import ObjectId
 import json
 
 import logging
-d
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -64,15 +64,16 @@ def upload_imageFile():
 def upload_cameraImage():
     if not request.get_data():
         return jsonify({"error": "No data in post"}), 400
-    imageData = json.decode(request.get_data())
+    imageData = json.parse(request.get_data())
 
-    process_imageData(imageData)
+    logger.error("request data", imageData)
+    #process_imageData(imageData)
  
 def process_imageData(imageData):
     
     if imageData:
         try:
-            result = db.receipts.insert_one({"image": image_data})
+            result = db.receipts.insert_one({"image": imageData})
             inserted_id = str(result.inserted_id)
             #logger.debug("YAY", inserted_id)
             call_ml_service(inserted_id)
