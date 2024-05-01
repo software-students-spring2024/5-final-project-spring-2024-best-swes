@@ -34,10 +34,12 @@
       const canvas = document.getElementById("canvas");
       const formContainer = document.getElementById("form-container");
       const cameraInterface = document.getElementById("camera-interface");
-
+      let videoStream = null; // To hold the reference to the video stream
+    
       function startCamera() {
         navigator.mediaDevices.getUserMedia({ video: true })
           .then(function (stream) {
+            videoStream = stream; // Store the stream to stop it later
             video.srcObject = stream;
             formContainer.style.display = "none";
             cameraInterface.style.display = "block";
@@ -45,16 +47,43 @@
             console.error("There was an error opening your camera: ", error);
           });
       }
-
+    
       function captureImage() {
         const context = canvas.getContext("2d");
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = canvas.toDataURL("image/jpeg");
-        document.getElementById("image").value = imageData; // Set the captured image as the value of the file input
+        
+        // Handle the captured image. For example, you might send it to the server via AJAX:
+        // (You need to implement the server-side to handle this POST request)
+        fetch('/upload', {
+          method: 'POST',
+          headers: {
+            // jsonified, strinified, jpeg base64
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ image: imageData })
+        }).then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Network response was not ok.');
+        }).then(data => {
+          console.log('Success:', data);
+        }).catch(error => {
+          console.error('Error:', error);
+        });
+    
+        // Optionally, stop the camera
+        if (videoStream) {
+          const tracks = videoStream.getTracks();
+          tracks.forEach(track => track.stop());
+        }
+    
         formContainer.style.display = "block";
         cameraInterface.style.display = "none";
       }
     </script>
+    
 
 </body>
 </html>
