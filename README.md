@@ -1,6 +1,7 @@
 # Final Project
 
 [link to our project](http://161.35.189.70:10000)
+
 An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
 
 # Team Members
@@ -19,3 +20,5 @@ Finally, open `http://localhost:10000/` in your local browser to view our web ap
 - [Docker Hub repo](https://hub.docker.com/repository/docker/sennyy/5-final-project-spring-2024-best-swes/general)
 - [Machine Learning Client](https://hub.docker.com/layers/sennyy/5-final-project-spring-2024-best-swes/latest/images/sha256-8e6f5dc5c28f64ee5f8deb15ed03da005c09c8933a5b3f9f6d3aca934774eb17?context=repo)
 - [Webapp](https://hub.docker.com/layers/sennyy/5-final-project-spring-2024-best-swes/webapp/images/sha256-a2177768a9c1b34b5995fa325076f42fb24d56aeb087b8824f203efdae94cd96?context=repo)
+
+
