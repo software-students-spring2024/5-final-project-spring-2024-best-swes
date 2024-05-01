@@ -10,10 +10,10 @@
     <h1>Welcome to CheckMate</h1>
 
     <!-- Camera and Image Capture Interface -->
-    <div id="camera-interface" style="display: none;">
+    <div id="camera-interface" style="visibility: hidden;">
       <video id="video-stream" width="640" height="480" autoplay></video>
       <canvas id="canvas" width="640" height="480"></canvas>
-      <button id="capture-btn" style="display: none;" onclick="captureImage()">Capture Image</button>
+      <button class="btn" id="capture-btn" style="visibility: visible;" onclick="captureImage()">Capture Image</button>
     </div>
   
     <div id="form-container" style="text-align: center; margin-top: 20px;">
@@ -36,15 +36,15 @@
       const cameraInterface = document.getElementById("camera-interface");
       const captureButton = document.getElementById("capture-btn");
       let videoStream = null; // To hold the reference to the video stream
-
+ 
       function startCamera() {
           navigator.mediaDevices.getUserMedia({ video: true })
             .then(function (stream) {
               videoStream = stream; // Store the stream to stop it later
+              captureButton.style.visibility = "visible";  // Show the capture button
               video.srcObject = stream;
-              formContainer.style.display = "none";
-              cameraInterface.style.display = "block";
-              captureButton.style.display = "block";  // Show the capture button
+              formContainer.style.visbility = "hidden";
+              cameraInterface.style.visibility = "visible";
             }).catch(function (error) {
               console.error("There was an error opening your camera: ", error);
             });
@@ -77,11 +77,13 @@
             tracks.forEach(track => track.stop());
           }
 
-          formContainer.style.display = "block";
-          cameraInterface.style.display = "none";
-          captureButton.style.display = "none";  // Hide the capture button after taking the photo
+          formContainer.style.visbility = "visible";
+          cameraInterface.style.visibility = "hidden";
+          captureButton.style.visibility = "hidden";  // Hide the capture button after taking the photo
       }
     </script>
+
+    
     
 
 </body>
