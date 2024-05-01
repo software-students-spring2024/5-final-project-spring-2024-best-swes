@@ -11,18 +11,18 @@
 
     <!-- Camera and Image Capture Interface -->
     <div id="camera-interface" style="display: none;">
-        <video id="video-stream" width="640" height="480" autoplay></video>
-        <canvas id="canvas" width="640" height="480"></canvas>
+      <video id="video-stream" width="640" height="480" autoplay></video>
+      <canvas id="canvas" width="640" height="480"></canvas>
     </div>
 
     <div id="form-container" style="text-align: center; margin-top: 20px;">
-        <form action="/upload" method="post" enctype="multipart/form-data">
-            <label for="image">Upload Receipt:</label>
-            <input type="file" accept="image/*" capture="camera" id="image" name="image">
-            <button type="submit">Upload Receipt</button>
-        </form>
-        <button class="btn" onclick="startCamera()">Start Camera</button>
-        <button onclick="captureImage()">Capture Image</button>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+          <label for="image">Upload Receipt:</label>
+          <input type="file" accept="image/*" capture="camera" id="image" name="image">
+          <button type="submit">Upload Receipt</button>
+      </form>
+      <button class="btn" onclick="startCamera()">Start Camera</button>
+      <button onclick="captureImage()">Capture Image</button>
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
