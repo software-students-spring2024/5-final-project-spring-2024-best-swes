@@ -1,5 +1,6 @@
 # Final Project
 
+[link to our project](http://161.35.189.70:10000)
 An exercise to put to practice software development teamwork, subsystem communication, containers, deployment, and CI/CD pipelines. See [instructions](./instructions.md) for details.
 
 # Team Members
