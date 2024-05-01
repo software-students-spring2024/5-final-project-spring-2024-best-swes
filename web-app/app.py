@@ -63,7 +63,7 @@ def upload_imageFile():
 @app.route('/uploadCamera', methods=['POST'])
 def upload_cameraImage():
     if not request.get_data():
-        return jsonify({"error"; "No data in post"}), 400
+        return jsonify({"error": "No data in post"}), 400
     imageData = json.decode(request.get_data())
 
     process_imageData(imageData)
