@@ -50,6 +50,24 @@ if os.getenv("FLASK_ENV", "development") == "development":
 cxn = pymongo.MongoClient(os.getenv("MONGO_URI"))
 db = cxn[os.getenv("MONGO_DBNAME")]  # store a reference to the database
 
+# Load response1.json
+with open("response1.json", "r") as f:
+    data = json.load(f)
+
+print('Receipt Keys:', data['receipts'][0].keys())
+items = data['receipts'][0]['items']
+print()
+print(f"Your purchase at {data['receipts'][0]['merchant_name']}")
+
+for item in items:
+    print(f"{item['description']} - {data['receipts'][0]['currency']} {item['amount']}")
+print("-" * 20)
+print(f"Subtotal: {data['receipts'][0]['currency']} {data['receipts'][0]['subtotal']}")
+print(f"Tax: {data['receipts'][0]['currency']} {data['receipts'][0]['tax']}")
+print("-" * 20)
+print(f"Total: {data['receipts'][0]['currency']} {data['receipts'][0]['total']}")
+# print(data['receipts'])
+
 @app.route('/predict', methods=['POST'])
 def pretdict_endpoint():
     # Get the image data from the request
@@ -91,33 +109,43 @@ def pretdict_endpoint():
     # Return the inserted_id as a JSON response
     return jsonify({'_id': str(inserted_id)})
 
-def perform_ocr(Object_ID):
-    logger.debug("starting perform_ocr function...") # debug
-    url = "https://ocr.asprise.com/api/v1/receipt"
-    image_data = db.receipts.find_one({"_id": Object_ID})['image']
-    file_path = f"receipt_{Object_ID}.jpg"  # Set the file path to save the image
-    logger.debug("file path: %s", file_path) # debug
-    with open(file_path, "wb") as f:
-        f.write(image_data)
-    file_path = file_path.replace('\x00', '')  # Remove any null bytes from the file path
+def perform_ocr():
+    try:
+        json_file_path = os.path.join(os.path.dirname(__file__), 'response1.json')
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+        if 'receipts' in data and len(data['receipts']) > 0:
+            # Access the first receipt since the JSON has an array of receipts
+            receipt_data = data['receipts'][0]
+
+            # Prepare the receipt format as needed, you might need to adjust based on your MongoDB schema
+            formatted_receipt = {
+                'merchant_name': receipt_data.get('merchant_name'),
+                'merchant_address': receipt_data.get('merchant_address'),
+                'merchant_phone': receipt_data.get('merchant_phone'),
+                'total': receipt_data.get('total'),
+                'tax': receipt_data.get('tax'),
+                'subtotal': receipt_data.get('subtotal'),
+                'currency': receipt_data.get('currency'),
+                'items': receipt_data.get('items', []),
+                'date': receipt_data.get('date')
+            }
+            return formatted_receipt
+        else:
+            logger.error("No 'receipts' key found in JSON file or 'receipts' array is empty.")
+            return None
+    except FileNotFoundError:
+        logger.error(f"The file {json_file_path} was not found.")
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error in file {json_file_path}: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        return None
 
 
-    # Get response (can only do this a couple times with the test API key)
-    res = requests.post(url, 
-                        data = {
-                            'api_key': 'TEST',
-                            'recognizer': 'auto',
-                            'ref_no': 'ocr_python_123'
-                        },
 
-                        files = {
-                            'file': open(file_path, "rb")
-                        })
-
-    with open("response.json", "w") as f:
-        f.write(res.text)
-    
-    return res.json()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)  # Run the app

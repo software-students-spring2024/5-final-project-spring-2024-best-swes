@@ -11,7 +11,7 @@
             <h3>{{ person }}</h3> <!-- Ensure variable matches what's expected -->
             {% for item in food_items %}
                 <div>
-                    <input type="checkbox" name="{{ person }}" value="{{ item._id }}"> <!-- Ensure the name field is correctly handled -->
+                    <input type="checkbox" name="{{ person }}" value="{{ item['_id'] }}"> <!-- Ensure the name field is correctly handled -->
                     <label>{{ item.description }}</label> <!-- Adjusted to use a descriptive field -->
                 </div>
             {% endfor %}

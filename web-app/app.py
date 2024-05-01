@@ -7,6 +7,7 @@ import requests
 from dotenv import load_dotenv
 from bson import ObjectId
 import json
+import uuid
 
 import logging
 
@@ -30,16 +31,43 @@ if os.getenv("FLASK_ENV", "development") == "development":
 cxn = pymongo.MongoClient(os.getenv("MONGO_URI"))
 db = cxn[os.getenv("MONGO_DBNAME")]  # store a reference to the database
 
+def perform_ocr():
+    try:
+        json_file_path = os.path.join(os.path.dirname(__file__), 'response1.json')
+        with open(json_file_path, "r") as file:
+            data = json.load(file)
+        if 'receipts' in data and len(data['receipts']) > 0:
+            # Access the first receipt since the JSON has an array of receipts
+            receipt_data = data['receipts'][0]
 
-# Call the ML service to perform OCR on the receipt
-def call_ml_service(Object_ID):
-    url = "http://machine-learning-client:5002/predict"
-    headers = {'Content-Type': 'application/json'}
-    data = json.dumps({"Object_ID": str(Object_ID)})  # Serialize the Object_ID into a JSON string
-    response = requests.post(url, data=data, headers=headers)
-    logger.debug(f"Response Status Code: {response.status_code}")
-    logger.debug(f"Response Text: {response.text}")
-    return response.json()
+            # Prepare the receipt format as needed, you might need to adjust based on your MongoDB schema
+            formatted_receipt = {
+                'merchant_name': receipt_data.get('merchant_name'),
+                'merchant_address': receipt_data.get('merchant_address'),
+                'merchant_phone': receipt_data.get('merchant_phone'),
+                'total': receipt_data.get('total'),
+                'tax': receipt_data.get('tax'),
+                'subtotal': receipt_data.get('subtotal'),
+                'currency': receipt_data.get('currency'),
+                'items': receipt_data.get('items', []),
+                'date': receipt_data.get('date')
+            }
+            for item in receipt_data.get('items', []):
+                item['_id'] = str(uuid.uuid4())  # Assign a unique ID
+            return formatted_receipt
+        else:
+            logger.error("No 'receipts' key found in JSON file or 'receipts' array is empty.")
+            return None
+    except FileNotFoundError:
+        logger.error(f"The file {json_file_path} was not found.")
+        return None
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error in file {json_file_path}: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        return None
+
 
 
 #homepage -add receipt - history 
@@ -55,19 +83,16 @@ def upload_image():
     file = request.files['image']
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
-    if file:
-        image_data = file.read()
-        try:
-            result = db.receipts.insert_one({"image": image_data})
-            inserted_id = str(result.inserted_id)
-            #logger.debug("YAY", inserted_id)
-            call_ml_service(inserted_id)
-            return redirect(url_for('numofpeople', receipt_id=inserted_id))
-        except pymongo.errors.ServerSelectionTimeoutError as e:
-            logger.error("Could not connect to MongoDB: %s", str(e))
-            return jsonify({"error": "Database connection failed"}), 503
 
-    return jsonify({"error": "Unexpected error occurred"}), 500
+    # Simulate OCR by loading data from a JSON file
+    receipt_data = perform_ocr()
+    if not receipt_data:
+        return jsonify({"error": "OCR simulation failed or JSON file is incorrect"}), 500
+
+    # Insert parsed data into MongoDB
+    result = db.receipts.insert_one(receipt_data)
+    inserted_id = str(result.inserted_id)
+    return redirect(url_for('numofpeople', receipt_id=inserted_id))
 
 
 #(  pull receipt from database )
@@ -98,6 +123,13 @@ def submit_people(receipt_id):
         return jsonify({"error": "Database connection failed"}), 503
 #label appetizers
 
+def is_valid_uuid(uuid_to_test, version=4):
+    try:
+        uuid_obj = uuid.UUID(uuid_to_test, version=version)
+        return str(uuid_obj) == uuid_to_test
+    except ValueError:
+        return False
+
 @app.route('/select_appetizers/<receipt_id>', methods=['GET', 'POST'])
 def select_appetizers(receipt_id):
     if request.method == 'POST':
@@ -112,20 +144,19 @@ def select_appetizers(receipt_id):
         appetizer_ids = request.form.getlist('appetizers')
         logging.debug(f"Received appetizer IDs: {appetizer_ids}")
 
-        valid_ids = [id for id in appetizer_ids if ObjectId.is_valid(id) and id.strip() != '']
+        valid_ids = [id for id in appetizer_ids if is_valid_uuid(id)]
         logging.debug(f"Valid appetizer IDs: {valid_ids}")
 
         if valid_ids:
-            object_ids = [ObjectId(id) for id in valid_ids]
+            # Update items where the ID matches any of the valid appetizer IDs
             db.receipts.update_many(
-                {'_id': ObjectId(receipt_id)},
-                {'$set': {'items.$[elem].is_appetizer': True}},
-                array_filters=[{'elem._id': {'$in': object_ids}}]
+                {'_id': ObjectId(receipt_id), 'items._id': {'$in': valid_ids}},
+                {'$set': {'items.$.is_appetizer': True}}
             )
-            db.receipts.update_one(
-                {'_id': ObjectId(receipt_id)},
-                {'$set': {'items.$[elem].is_appetizer': False}},
-                array_filters=[{'elem._id': {'$nin': object_ids}}]
+            # Reset is_appetizer for other items
+            db.receipts.update_many(
+                {'_id': ObjectId(receipt_id), 'items._id': {'$nin': valid_ids}},
+                {'$set': {'items.$.is_appetizer': False}}
             )
         else:
             db.receipts.update_one(
@@ -207,9 +238,17 @@ def calculate_bill(receipt_id):
         allocations = receipt.get('allocations', [])
         tax = float(receipt.get('tax', 0.00))
         subtotal = float(receipt.get('subtotal', 0.00))
+        
+        logger.debug(f"Subtotal and tax values: Subtotal={subtotal}, Tax={tax}")
+        
+        if not items or subtotal <= 0:
+            logger.error("No items found or subtotal is zero or negative.")
+            return jsonify({"error": "Invalid receipt data"}), 400
 
         payments = {name: 0 for name in receipt.get('names', [])}
         appetizer_total = sum(item.get('amount', 0.00) for item in items if item.get('is_appetizer', False))
+        logger.debug(f"Total appetizer cost: {appetizer_total}")
+        
         num_people = len(receipt.get('names', []))
 
         if num_people == 0:
@@ -217,24 +256,33 @@ def calculate_bill(receipt_id):
             return jsonify({"error": "Number of people cannot be zero"}), 400
 
         appetizer_split = appetizer_total / num_people
+        logger.debug(f"Appetizer cost per person: {appetizer_split}")
 
         for name in payments:
             payments[name] += appetizer_split
+            logger.debug(f"Initial payment for {name}: {payments[name]}")
 
         # Calculating individual payments
         for allocation in allocations:
-            for item_index in allocation.get('items', []):
-                if item_index.isdigit() and int(item_index) < len(items):
-                    payments[allocation['name']] += items[int(item_index)].get('amount', 0.00)
+            for item_id in allocation['items']:
+                item = next((item for item in items if str(item['_id']) == item_id), None)
+                if item:
+                    item_amount = item['amount']
+                    payments[allocation['name']] += item_amount
+                    logger.debug(f"Added {item_amount} to {allocation['name']}'s total from item {item['description']}")
+
+
 
         total_with_tax = subtotal + tax
         total_with_tip = total_with_tax * (1 + tip_percentage)
+        logger.debug(f"Total with tax: {total_with_tax}, Total with tip: {total_with_tip}")
 
         # Distributing tax and tip across individuals
         for name, payment in payments.items():
             if subtotal > 0:
                 person_share_before_tax = payment / subtotal
                 payments[name] = payment + (total_with_tax + total_with_tip - subtotal) * person_share_before_tax
+                logger.debug(f"Final payment for {name}: {payments[name]}")
 
         db.receipts.update_one({"_id": ObjectId(receipt_id)}, {'$set': {'payments': payments}})
         
