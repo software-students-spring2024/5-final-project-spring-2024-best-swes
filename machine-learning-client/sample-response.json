@@ -1,0 +1,706 @@
+{
+    "api_request": {
+        "error": {},
+        "resources": [
+            "document"
+        ],
+        "status": "success",
+        "status_code": 201,
+        "url": "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict"
+    },
+    "document": {
+        "id": "439f9443-64a9-4cdf-ae08-195942824b61",
+        "inference": {
+            "extras": {},
+            "finished_at": "2024-05-01T04:46:41.281461",
+            "is_rotation_applied": true,
+            "pages": [
+                {
+                    "extras": {},
+                    "id": 0,
+                    "orientation": {
+                        "value": 0
+                    },
+                    "prediction": {
+                        "category": {
+                            "confidence": 1,
+                            "value": "food"
+                        },
+                        "date": {
+                            "confidence": 0.99,
+                            "polygon": [
+                                [
+                                    0.275,
+                                    0.201
+                                ],
+                                [
+                                    0.49,
+                                    0.201
+                                ],
+                                [
+                                    0.49,
+                                    0.225
+                                ],
+                                [
+                                    0.275,
+                                    0.225
+                                ]
+                            ],
+                            "value": "2020-09-25"
+                        },
+                        "document_type": {
+                            "confidence": 0.92,
+                            "value": "EXPENSE RECEIPT"
+                        },
+                        "line_items": [
+                            {
+                                "confidence": 0.97,
+                                "description": "Hendrick Gin & Tonic",
+                                "polygon": [
+                                    [
+                                        0.01,
+                                        0.266
+                                    ],
+                                    [
+                                        0.915,
+                                        0.266
+                                    ],
+                                    [
+                                        0.915,
+                                        0.29
+                                    ],
+                                    [
+                                        0.01,
+                                        0.29
+                                    ]
+                                ],
+                                "quantity": 1,
+                                "total_amount": 10.5,
+                                "unit_price": "None"
+                            },
+                            {
+                                "confidence": 0.97,
+                                "description": "Ginger Mule",
+                                "polygon": [
+                                    [
+                                        0.01,
+                                        0.309
+                                    ],
+                                    [
+                                        0.915,
+                                        0.309
+                                    ],
+                                    [
+                                        0.915,
+                                        0.336
+                                    ],
+                                    [
+                                        0.01,
+                                        0.336
+                                    ]
+                                ],
+                                "quantity": 1,
+                                "total_amount": 9.5,
+                                "unit_price": "None"
+                            },
+                            {
+                                "confidence": 0.97,
+                                "description": "Glass Camus Zin",
+                                "polygon": [
+                                    [
+                                        0.01,
+                                        0.353
+                                    ],
+                                    [
+                                        0.915,
+                                        0.353
+                                    ],
+                                    [
+                                        0.915,
+                                        0.378
+                                    ],
+                                    [
+                                        0.01,
+                                        0.378
+                                    ]
+                                ],
+                                "quantity": 1,
+                                "total_amount": 24,
+                                "unit_price": "None"
+                            },
+                            {
+                                "confidence": 0.97,
+                                "description": "Titos Vodka Soda",
+                                "polygon": [
+                                    [
+                                        0.01,
+                                        0.398
+                                    ],
+                                    [
+                                        0.915,
+                                        0.398
+                                    ],
+                                    [
+                                        0.915,
+                                        0.422
+                                    ],
+                                    [
+                                        0.01,
+                                        0.422
+                                    ]
+                                ],
+                                "quantity": 1,
+                                "total_amount": 12,
+                                "unit_price": "None"
+                            }
+                        ],
+                        "locale": {
+                            "confidence": 0.74,
+                            "country": "US",
+                            "currency": "USD",
+                            "language": "en",
+                            "value": "en-US"
+                        },
+                        "orientation": {
+                            "confidence": 0.99,
+                            "degrees": 0
+                        },
+                        "subcategory": {
+                            "confidence": 1,
+                            "value": "restaurant"
+                        },
+                        "supplier_address": {
+                            "confidence": 0.95,
+                            "polygon": [
+                                [
+                                    0.326,
+                                    0.062
+                                ],
+                                [
+                                    0.673,
+                                    0.062
+                                ],
+                                [
+                                    0.673,
+                                    0.121
+                                ],
+                                [
+                                    0.326,
+                                    0.121
+                                ]
+                            ],
+                            "value": "1016 6th ave new york ny"
+                        },
+                        "supplier_company_registrations": [],
+                        "supplier_name": {
+                            "confidence": 0.94,
+                            "polygon": [
+                                [
+                                    0.179,
+                                    0.031
+                                ],
+                                [
+                                    0.824,
+                                    0.031
+                                ],
+                                [
+                                    0.824,
+                                    0.064
+                                ],
+                                [
+                                    0.179,
+                                    0.064
+                                ]
+                            ],
+                            "raw_value": "Hotel Restaurant and Bar",
+                            "value": "HOTEL RESTAURANT AND BAR"
+                        },
+                        "supplier_phone_number": {
+                            "confidence": 0.99,
+                            "polygon": [
+                                [
+                                    0.371,
+                                    0.117
+                                ],
+                                [
+                                    0.727,
+                                    0.117
+                                ],
+                                [
+                                    0.727,
+                                    0.152
+                                ],
+                                [
+                                    0.371,
+                                    0.152
+                                ]
+                            ],
+                            "value": "6503091992"
+                        },
+                        "taxes": [
+                            {
+                                "base": "None",
+                                "code": "TAX",
+                                "confidence": 0.99,
+                                "polygon": [
+                                    [
+                                        0.22,
+                                        0.566
+                                    ],
+                                    [
+                                        0.855,
+                                        0.566
+                                    ],
+                                    [
+                                        0.855,
+                                        0.59
+                                    ],
+                                    [
+                                        0.22,
+                                        0.59
+                                    ]
+                                ],
+                                "rate": "None",
+                                "value": 4.76
+                            }
+                        ],
+                        "time": {
+                            "confidence": 0.99,
+                            "polygon": [
+                                [
+                                    0.554,
+                                    0.201
+                                ],
+                                [
+                                    0.725,
+                                    0.201
+                                ],
+                                [
+                                    0.725,
+                                    0.222
+                                ],
+                                [
+                                    0.554,
+                                    0.222
+                                ]
+                            ],
+                            "value": "12:54"
+                        },
+                        "tip": {
+                            "confidence": 0,
+                            "polygon": [],
+                            "value": "None"
+                        },
+                        "total_amount": {
+                            "confidence": 0.99,
+                            "polygon": [
+                                [
+                                    0.728,
+                                    0.61
+                                ],
+                                [
+                                    0.855,
+                                    0.61
+                                ],
+                                [
+                                    0.855,
+                                    0.635
+                                ],
+                                [
+                                    0.728,
+                                    0.635
+                                ]
+                            ],
+                            "value": 60.76
+                        },
+                        "total_net": {
+                            "confidence": 0.99,
+                            "polygon": [
+                                [
+                                    0.728,
+                                    0.523
+                                ],
+                                [
+                                    0.853,
+                                    0.523
+                                ],
+                                [
+                                    0.853,
+                                    0.546
+                                ],
+                                [
+                                    0.728,
+                                    0.546
+                                ]
+                            ],
+                            "value": 56
+                        },
+                        "total_tax": {
+                            "confidence": 0.99,
+                            "polygon": [],
+                            "value": 4.76
+                        }
+                    }
+                }
+            ],
+            "prediction": {
+                "category": {
+                    "confidence": 1,
+                    "value": "food"
+                },
+                "date": {
+                    "confidence": 0.99,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.275,
+                            0.201
+                        ],
+                        [
+                            0.49,
+                            0.201
+                        ],
+                        [
+                            0.49,
+                            0.225
+                        ],
+                        [
+                            0.275,
+                            0.225
+                        ]
+                    ],
+                    "value": "2020-09-25"
+                },
+                "document_type": {
+                    "confidence": 0.92,
+                    "value": "EXPENSE RECEIPT"
+                },
+                "line_items": [
+                    {
+                        "confidence": 0.97,
+                        "description": "Hendrick Gin & Tonic",
+                        "page_id": 0,
+                        "polygon": [
+                            [
+                                0.01,
+                                0.266
+                            ],
+                            [
+                                0.915,
+                                0.266
+                            ],
+                            [
+                                0.915,
+                                0.29
+                            ],
+                            [
+                                0.01,
+                                0.29
+                            ]
+                        ],
+                        "quantity": 1,
+                        "total_amount": 10.5,
+                        "unit_price": "None"
+                    },
+                    {
+                        "confidence": 0.97,
+                        "description": "Ginger Mule",
+                        "page_id": 0,
+                        "polygon": [
+                            [
+                                0.01,
+                                0.309
+                            ],
+                            [
+                                0.915,
+                                0.309
+                            ],
+                            [
+                                0.915,
+                                0.336
+                            ],
+                            [
+                                0.01,
+                                0.336
+                            ]
+                        ],
+                        "quantity": 1,
+                        "total_amount": 9.5,
+                        "unit_price": "None"
+                    },
+                    {
+                        "confidence": 0.97,
+                        "description": "Glass Camus Zin",
+                        "page_id": 0,
+                        "polygon": [
+                            [
+                                0.01,
+                                0.353
+                            ],
+                            [
+                                0.915,
+                                0.353
+                            ],
+                            [
+                                0.915,
+                                0.378
+                            ],
+                            [
+                                0.01,
+                                0.378
+                            ]
+                        ],
+                        "quantity": 1,
+                        "total_amount": 24,
+                        "unit_price": "None"
+                    },
+                    {
+                        "confidence": 0.97,
+                        "description": "Titos Vodka Soda",
+                        "page_id": 0,
+                        "polygon": [
+                            [
+                                0.01,
+                                0.398
+                            ],
+                            [
+                                0.915,
+                                0.398
+                            ],
+                            [
+                                0.915,
+                                0.422
+                            ],
+                            [
+                                0.01,
+                                0.422
+                            ]
+                        ],
+                        "quantity": 1,
+                        "total_amount": 12,
+                        "unit_price": "None"
+                    }
+                ],
+                "locale": {
+                    "confidence": 0.74,
+                    "country": "US",
+                    "currency": "USD",
+                    "language": "en",
+                    "value": "en-US"
+                },
+                "subcategory": {
+                    "confidence": 1,
+                    "value": "restaurant"
+                },
+                "supplier_address": {
+                    "confidence": 0.95,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.326,
+                            0.062
+                        ],
+                        [
+                            0.673,
+                            0.062
+                        ],
+                        [
+                            0.673,
+                            0.121
+                        ],
+                        [
+                            0.326,
+                            0.121
+                        ]
+                    ],
+                    "value": "1016 6th ave new york ny"
+                },
+                "supplier_company_registrations": [],
+                "supplier_name": {
+                    "confidence": 0.94,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.179,
+                            0.031
+                        ],
+                        [
+                            0.824,
+                            0.031
+                        ],
+                        [
+                            0.824,
+                            0.064
+                        ],
+                        [
+                            0.179,
+                            0.064
+                        ]
+                    ],
+                    "raw_value": "Hotel Restaurant and Bar",
+                    "value": "HOTEL RESTAURANT AND BAR"
+                },
+                "supplier_phone_number": {
+                    "confidence": 0.99,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.371,
+                            0.117
+                        ],
+                        [
+                            0.727,
+                            0.117
+                        ],
+                        [
+                            0.727,
+                            0.152
+                        ],
+                        [
+                            0.371,
+                            0.152
+                        ]
+                    ],
+                    "value": "6503091992"
+                },
+                "taxes": [
+                    {
+                        "base": "None",
+                        "code": "TAX",
+                        "confidence": 0.99,
+                        "page_id": 0,
+                        "polygon": [
+                            [
+                                0.22,
+                                0.566
+                            ],
+                            [
+                                0.855,
+                                0.566
+                            ],
+                            [
+                                0.855,
+                                0.59
+                            ],
+                            [
+                                0.22,
+                                0.59
+                            ]
+                        ],
+                        "rate": "None",
+                        "value": 4.76
+                    }
+                ],
+                "time": {
+                    "confidence": 0.99,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.554,
+                            0.201
+                        ],
+                        [
+                            0.725,
+                            0.201
+                        ],
+                        [
+                            0.725,
+                            0.222
+                        ],
+                        [
+                            0.554,
+                            0.222
+                        ]
+                    ],
+                    "value": "12:54"
+                },
+                "tip": {
+                    "confidence": 0,
+                    "page_id": "None",
+                    "polygon": [],
+                    "value": "None"
+                },
+                "total_amount": {
+                    "confidence": 0.99,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.728,
+                            0.61
+                        ],
+                        [
+                            0.855,
+                            0.61
+                        ],
+                        [
+                            0.855,
+                            0.635
+                        ],
+                        [
+                            0.728,
+                            0.635
+                        ]
+                    ],
+                    "value": 60.76
+                },
+                "total_net": {
+                    "confidence": 0.99,
+                    "page_id": 0,
+                    "polygon": [
+                        [
+                            0.728,
+                            0.523
+                        ],
+                        [
+                            0.853,
+                            0.523
+                        ],
+                        [
+                            0.853,
+                            0.546
+                        ],
+                        [
+                            0.728,
+                            0.546
+                        ]
+                    ],
+                    "value": 56
+                },
+                "total_tax": {
+                    "confidence": 0.99,
+                    "page_id": "None",
+                    "polygon": [],
+                    "value": 4.76
+                }
+            },
+            "processing_time": 0.704,
+            "product": {
+                "features": [
+                    "locale",
+                    "category",
+                    "subcategory",
+                    "document_type",
+                    "date",
+                    "time",
+                    "total_amount",
+                    "total_net",
+                    "total_tax",
+                    "tip",
+                    "taxes",
+                    "supplier_name",
+                    "supplier_company_registrations",
+                    "supplier_address",
+                    "supplier_phone_number",
+                    "orientation",
+                    "line_items"
+                ],
+                "name": "mindee/expense_receipts",
+                "type": "standard",
+                "version": "5.1"
+            },
+            "started_at": "2024-05-01T04:46:40.577339"
+        },
+        "n_pages": 1,
+        "name": "receipt_6631c92fcf994b91b60712c9.jpg"
+    }
+}

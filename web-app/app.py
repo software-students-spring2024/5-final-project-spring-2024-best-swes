@@ -231,14 +231,17 @@ def calculate_bill(receipt_id):
         total_with_tip = total_with_tax * (1 + tip_percentage)
 
         # Distributing tax and tip across individuals
+        total_payment = 0
         for name, payment in payments.items():
             if subtotal > 0:
                 person_share_before_tax = payment / subtotal
                 payments[name] = payment + (total_with_tax + total_with_tip - subtotal) * person_share_before_tax
+                total_payment += payments[name]
+                logger.debug(f"Final payment for {name}: {payments[name]}")
 
         db.receipts.update_one({"_id": ObjectId(receipt_id)}, {'$set': {'payments': payments}})
         
-        return render_template('results.html', payments=payments, receipt_id=receipt_id)
+        return render_template('results.html', payments=payments, total_payment=total_payment, receipt_id=receipt_id)
     except Exception as e:
         logger.error(f"Error in calculate_bill: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
