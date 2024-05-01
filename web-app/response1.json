@@ -1,0 +1,166 @@
+{
+    "ocr_type" : "receipts",
+    "request_id" : "P_72.80.97.228_luxbmz9s_bz6",
+    "ref_no" : "ocr_python_123",
+    "file_name" : "RestaurantReceipt1.png",
+    "request_received_on" : 1712965847825,
+    "success" : true,
+    "image_width" : 812,
+    "image_height" : 1354,
+    "image_rotation" : 0,
+    "recognition_completed_on" : 1712965848215,
+    "receipts" : [ {
+      "merchant_name" : "HARBOR LANE CAFE",
+      "merchant_address" : "HARBOR LANE CAFE",
+      "merchant_phone" : null,
+      "merchant_website" : null,
+      "merchant_tax_reg_no" : null,
+      "merchant_company_reg_no" : null,
+      "region" : null,
+      "mall" : null,
+      "country" : "US",
+      "state" : "IL",
+      "city" : "CHICAGO",
+      "receipt_no" : null,
+      "date" : "2019-11-20",
+      "time" : null,
+      "items" : [ {
+        "amount" : 14.98,
+        "category" : null,
+        "description" : "Tacos Del Mal Shrimp",
+        "flags" : "",
+        "qty" : 1,
+        "remarks" : null,
+        "tags" : null,
+        "unitPrice" : null
+      }, {
+        "amount" : 12.50,
+        "category" : null,
+        "description" : "Especial Salad Chicken",
+        "flags" : "",
+        "qty" : 1,
+        "remarks" : null,
+        "tags" : null,
+        "unitPrice" : null
+      }, {
+        "amount" : 1.99,
+        "category" : null,
+        "description" : "Fountain Beverage",
+        "flags" : "",
+        "qty" : 1,
+        "remarks" : null,
+        "tags" : null,
+        "unitPrice" : null
+      } ],
+      "currency" : "USD",
+      "total" : 31.39,
+      "subtotal" : 29.47,
+      "tax" : 1.92,
+      "service_charge" : null,
+      "tip" : null,
+      "payment_method" : null,
+      "payment_details" : null,
+      "credit_card_type" : null,
+      "credit_card_number" : null,
+      "ocr_text" : " HARBOR LANE CAFE\n 3941 GREEN OAKS BLVD\n CHICAGO, IL\n      SALE\n 11/20/2019    11:05 AM\n BATCH #: 01A2A\n APPR #: 34362\n TRACE #: 9\n VISA 3483\n 1 Tacos Del Mal Shrimp     $14.98\n 1 Especial Salad Chicken   $12.50\n 1 Fountain Beverage         $1.99\n SUBTOTAL:   $29.47\n TAX:        $1.92\n TOTAL:      $31.39\n TIP:\n TOTAL:\n      APPROVED\n      THANK YOU\n      CUSTOMER COPY",
+      "ocr_confidence" : 98.50,
+      "width" : 596,
+      "height" : 1111,
+      "avg_char_width" : 16.9954,
+      "avg_line_height" : 28.3333,
+      "conf_amount" : 83,
+      "source_locations" : {
+        "date" : [ [ {
+          "x" : 46,
+          "y" : 216
+        }, {
+          "x" : 240,
+          "y" : 216
+        }, {
+          "x" : 240,
+          "y" : 246
+        }, {
+          "x" : 46,
+          "y" : 246
+        } ] ],
+        "total" : [ [ {
+          "x" : 275,
+          "y" : 696
+        }, {
+          "x" : 381,
+          "y" : 696
+        }, {
+          "x" : 381,
+          "y" : 726
+        }, {
+          "x" : 275,
+          "y" : 726
+        } ] ],
+        "subtotal" : [ [ {
+          "x" : 276,
+          "y" : 615
+        }, {
+          "x" : 384,
+          "y" : 615
+        }, {
+          "x" : 384,
+          "y" : 646
+        }, {
+          "x" : 276,
+          "y" : 646
+        } ] ],
+        "merchant_name" : [ [ {
+          "x" : 40,
+          "y" : 13
+        }, {
+          "x" : 357,
+          "y" : 15
+        }, {
+          "x" : 357,
+          "y" : 47
+        }, {
+          "x" : 40,
+          "y" : 46
+        } ] ],
+        "doc" : [ [ {
+          "x" : 24,
+          "y" : -40
+        }, {
+          "x" : 679,
+          "y" : -40
+        }, {
+          "x" : 679,
+          "y" : 1181
+        }, {
+          "x" : 24,
+          "y" : 1181
+        } ] ],
+        "tax" : [ [ {
+          "x" : 277,
+          "y" : 656
+        }, {
+          "x" : 361,
+          "y" : 656
+        }, {
+          "x" : 361,
+          "y" : 685
+        }, {
+          "x" : 277,
+          "y" : 685
+        } ] ],
+        "merchant_address" : [ [ {
+          "x" : 24,
+          "y" : 11
+        }, {
+          "x" : 373,
+          "y" : 13
+        }, {
+          "x" : 373,
+          "y" : 49
+        }, {
+          "x" : 24,
+          "y" : 48
+        } ] ]
+      }
+    } ]
+  }
