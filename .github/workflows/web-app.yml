@@ -19,7 +19,10 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Install dependencies, lint, test, and build
+    - name: List contents in web-app directory
+      run: ls -la web-app/
+
+    - name: Install dependencies, lint, test, and build in web-app
       run: |
         cd web-app
         python -m pip install --upgrade pip
