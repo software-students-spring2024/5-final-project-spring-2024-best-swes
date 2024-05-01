@@ -57,8 +57,7 @@ def upload_imageFile():
     file = request.files['image']
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
-        image_data = file.read()
-
+    imageData = file.read()
     process_imageData(imageData)
 
 @app.route('/uploadCamera', methods=['POST'])
