@@ -5,3 +5,4 @@ requests
 Flask
 python-dotenv
 mindee
+uuid

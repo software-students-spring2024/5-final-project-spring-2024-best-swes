@@ -7,6 +7,7 @@ import json
 from dotenv import load_dotenv
 from bson import ObjectId
 from mindee import Client, PredictResponse, product # To access mindee OCR API
+import uuid
 
 import logging
 
@@ -82,7 +83,7 @@ def pretdict_endpoint():
     receipt_data = {
         'receipt_name': receipt['supplier_name']['raw_value'],
         'currency': receipt['locale']['currency'],
-        'items': [{'description': item['description'], 'amount': item['total_amount'], 'quantity': item['quantity']} for item in receipt['line_items']],
+        'items': [{'description': item['description'], 'amount': item['amount'], '_id': str(uuid.uuid4())} for item in receipt['items']],# generate a unique ID for each item
         'total': receipt['total_amount']['value'],
         'tax': receipt['total_tax']['value'],
         'tip': receipt['tip']['value'],
