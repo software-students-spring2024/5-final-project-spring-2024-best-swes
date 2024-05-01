@@ -47,16 +47,30 @@ def call_ml_service(Object_ID):
 def home():
     return render_template('home.html')
 
+
 @app.route('/uploadFile', methods=['POST'])
-def upload_image():
+def upload_imageFile():
     if 'image' not in request.files:
         return jsonify({"error": "No image part"}), 400
 
     file = request.files['image']
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
-    if file:
         image_data = file.read()
+
+    process_imageData(imageData)
+
+@app.route('/uploadCamera', methods=['POST'])
+def upload_cameraImage():
+    if not request.get_data():
+        return jsonify({"error"; "No data in post"}), 400
+    imageData = json.decode(request.get_data())
+
+    process_imageData(imageData)
+ 
+def process_imageData(imageData):
+    
+    if imageData:
         try:
             result = db.receipts.insert_one({"image": image_data})
             inserted_id = str(result.inserted_id)
