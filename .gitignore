@@ -147,3 +147,24 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+data/_mdb_catalog.wt
+data/collection-0--8546634698529359079.wt
+data/collection-2--8546634698529359079.wt
+data/collection-4--8546634698529359079.wt
+data/index-1--8546634698529359079.wt
+data/index-3--8546634698529359079.wt
+data/index-5--8546634698529359079.wt
+data/index-6--8546634698529359079.wt
+data/mongod.lock
+data/sizeStorer.wt
+data/storage.bson
+data/WiredTiger
+data/WiredTiger.lock
+data/WiredTiger.turtle
+data/WiredTiger.wt
+data/WiredTigerHS.wt
+data/diagnostic.data/metrics.2024-05-01T01-34-56Z-00000
+data/diagnostic.data/metrics.interim
+data/journal/WiredTigerLog.0000000001
+data/journal/WiredTigerPreplog.0000000001
+data/journal/WiredTigerPreplog.0000000002
