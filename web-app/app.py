@@ -7,6 +7,7 @@ import requests
 from dotenv import load_dotenv
 from bson import ObjectId
 import json
+import base64
 
 import logging
 
@@ -62,18 +63,22 @@ def upload_imageFile():
 
 @app.route('/uploadCamera', methods=['POST'])
 def upload_cameraImage():
-    if not request.get_data():
-        return jsonify({"error": "No data in post"}), 400
-    imageData = json.parse(request.get_data())
-
-    logger.error("request data", imageData)
-    #process_imageData(imageData)
+    logger.debug(f"processing a camera upload.")
+    data = request.get_json()  # Get JSON payload from the request
+    if 'image' in data:
+        imageData = data['image']
+        # Decode the base64 string:
+        header, encoded = imageData.split(",", 1)  # Assumes data:image/jpeg;base64,header
+        binaryImageData = base64.b64decode(encoded)
+        process_imageData(binaryImageData)
  
 def process_imageData(imageData):
     
+    logging.debug(f"proccessing image data.")
     if imageData:
         try:
-            result = db.receipts.insert_one({"image": imageData})
+            receipts = db['receipts']
+            result = receipts.insert_one({"image": imageData})
             inserted_id = str(result.inserted_id)
             #logger.debug("YAY", inserted_id)
             call_ml_service(inserted_id)
