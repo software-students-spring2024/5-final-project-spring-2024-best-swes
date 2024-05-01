@@ -9,14 +9,11 @@ from bson import ObjectId
 import json
 import uuid
 
-import logging
+import logger
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+logger.basicConfig(level=logger.DEBUG)
+logger = logger.getLogger(__name__)
 
-
-# load credentials and configuration options from .env file
-# if you do not yet have a file named .env, make one based on the templatpip e in env.example
 load_dotenv()  # take environment variables from .env.
 
 # instantiate the app
@@ -36,7 +33,7 @@ db = cxn[os.getenv("MONGO_DBNAME")]  # store a reference to the database
 def call_ml_service(Object_ID):
     url = "http://machine-learning-client:5002/predict"
     headers = {'Content-Type': 'application/json'}
-    data = json.dumps({"Object_ID": str(Object_ID)})  # Serialize the Object_ID into a JSON string
+    data = json.dumps({"Object_ID": str(Object_ID)})
     response = requests.post(url, data=data, headers=headers)
     logger.debug(f"Response Status Code: {response.status_code}")
     logger.debug(f"Response Text: {response.text}")
@@ -91,7 +88,8 @@ def submit_people(receipt_id):
 
     try:
         # Update the existing document in the receipts collection
-        db.receipts.update_one({"_id": ObjectId(receipt_id)}, {"$set": {"num_of_people": count, "names": names_list}})
+        db.receipts.update_one({"_id": ObjectId(receipt_id)},
+                               {"$set": {"num_of_people": count, "names": names_list}})
         return redirect(url_for('select_appetizers', receipt_id=receipt_id))
          # Redirect to another page after submission
     except pymongo.errors.ServerSelectionTimeoutError as e:
@@ -110,18 +108,17 @@ def is_valid_uuid(uuid_to_test, version=4):
 def select_appetizers(receipt_id):
     if request.method == 'POST':
         if 'no_appetizers' in request.form and request.form['no_appetizers'] == 'none':
-            #logging.debug("No appetizers selected by user.")
+            #logger.debug("No appetizers selected by user.")
             db.receipts.update_one(
                 {'_id': ObjectId(receipt_id)},
-                {'$set': {'items.$[].is_appetizer': False}}  # Reset all items to not be appetizers
-            )
+                {'$set': {'items.$[].is_appetizer': False}})
             return redirect(url_for('allocateitems', receipt_id=receipt_id))
 
         appetizer_ids = request.form.getlist('appetizers')
-        #logging.debug(f"Received appetizer IDs: {appetizer_ids}")
+        #logger.debug(f"Received appetizer IDs: {appetizer_ids}")
 
         valid_ids = [id for id in appetizer_ids if is_valid_uuid(id)]
-        #logging.debug(f"Valid appetizer IDs: {valid_ids}")
+        #logger.debug(f"Valid appetizer IDs: {valid_ids}")
         
         # First reset all items to not be appetizers
         db.receipts.update_one(
@@ -140,8 +137,11 @@ def select_appetizers(receipt_id):
                 {'_id': ObjectId(receipt_id), 'items._id': {'$nin': valid_ids}},
                 {'$set': {'items.$.is_appetizer': False}}
             )
-            selected_appetizers = db.receipts.find_one({'_id': ObjectId(receipt_id)}, {'items': 1})['items']
-            selected_appetizer_details = [(item['description'], item['amount']) for item in selected_appetizers if str(item['_id']) in valid_ids]
+            selected_appetizers = db.receipts.find_one({'_id': ObjectId(receipt_id)}, 
+                                                       {'items': 1})['items']
+            selected_appetizer_details = [(item['description'], item['amount']) 
+                                          for item in selected_appetizers 
+                                          if str(item['_id']) in valid_ids]
             #logger.debug(f"Selected Appetizers: {selected_appetizer_details}")
         else:
             db.receipts.update_one(
@@ -155,7 +155,8 @@ def select_appetizers(receipt_id):
     if not receipt:
         return jsonify({"error": "Receipt not found"}), 404
     items = receipt.get('items', [])
-    return render_template('select_appetizers.html', items=items, receipt_id=receipt_id)
+    return render_template('select_appetizers.html', items=items,
+                           receipt_id=receipt_id)
 
 
 #allocate items -> people 
@@ -164,7 +165,8 @@ def select_appetizers(receipt_id):
 def allocateitems(receipt_id):
     if request.method == 'POST':
         # Clear previous allocations to avoid duplicates
-        db.receipts.update_one({'_id': ObjectId(receipt_id)}, {'$unset': {'allocations': ''}})
+        db.receipts.update_one({'_id': ObjectId(receipt_id)}, 
+                               {'$unset': {'allocations': ''}})
 
         allocations = {}  # This will store which items are chosen by which people
         item_counts = {}  # This will count how many people have chosen each item
@@ -186,12 +188,16 @@ def allocateitems(receipt_id):
         return redirect(url_for('enter_tip', receipt_id=receipt_id))
     else:
         receipt = db.receipts.find_one({'_id': ObjectId(receipt_id)})
-        return render_template('allocateitems.html', people=receipt.get('names', []), food_items=receipt.get('items', []), receipt_id=receipt_id)
+        return render_template('allocateitems.html', 
+                               people=receipt.get('names', []), 
+                               food_items=receipt.get('items', []), 
+                               receipt_id=receipt_id)
 
 @app.route('/enter_tip/<receipt_id>', methods=['GET', 'POST'])
 def enter_tip(receipt_id):
     if request.method == 'POST':
-        return redirect(url_for('calculate_bill', receipt_id=receipt_id, tip_percentage=request.form['tip_percentage']))
+        return redirect(url_for('calculate_bill', receipt_id=receipt_id, 
+                                tip_percentage=request.form['tip_percentage']))
     return render_template('enter_tip.html', receipt_id=receipt_id)
 
 
@@ -229,9 +235,11 @@ def calculate_bill(receipt_id):
         
         # Aggregate total appetizer cost
         appetizer_items = [item for item in items if item.get('is_appetizer', False)]
-        #logger.debug(f"Items marked as appetizers: {[(item['description'], item['amount']) for item in appetizer_items]}")
+        #logger.debug(f"Items marked as appetizers: {[(item['description'], 
+        # item['amount']) for item in appetizer_items]}")
         
-        appetizer_total = sum(item['amount'] for item in appetizer_items if item.get('is_appetizer', False))
+        appetizer_total = sum(item['amount'] for item in appetizer_items 
+                              if item.get('is_appetizer', False))
         #logger.debug(f"Total appetizer cost: {appetizer_total}")
     
         tax = float(receipt.get('tax', 0.00))
@@ -292,7 +300,8 @@ def calculate_bill(receipt_id):
 
         db.receipts.update_one({"_id": ObjectId(receipt_id)}, {'$set': {'payments': payments}})
         
-        return render_template('results.html', payments=payments, total_payment=total_payment, receipt_id=receipt_id)
+        return render_template('results.html', payments=payments, 
+                               total_payment=total_payment, receipt_id=receipt_id)
     except Exception as e:
         logger.error(f"Error in calculate_bill: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
@@ -322,14 +331,16 @@ def history():
 def test_mongodb():
     try:
         info = db.command('serverStatus')
-        return jsonify(success=True, message="Successfully connected to MongoDB", info=info), 200
+        return jsonify(success=True, message="Successfully connected to MongoDB",
+                       info=info), 200
     except Exception as e:
         return jsonify(success=False, message=str(e)), 500
 @app.route('/test_ml_service')
 def test_ml_service():
     response = requests.get('http://machine-learning-client:5002/test_connection')
     if response.status_code == 200:
-        return jsonify(success=True, message="Connected to ML service", response=response.json()), 200
+        return jsonify(success=True, message="Connected to ML service",
+                       response=response.json()), 200
     else:
         return jsonify(success=False, message="Failed to connect to ML service"), 500
 @app.route('/test_connection', methods=['GET'])

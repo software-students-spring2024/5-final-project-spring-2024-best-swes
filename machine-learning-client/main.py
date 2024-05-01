@@ -1,39 +1,17 @@
-import os
-from flask import Flask, request, jsonify
-import requests
-import pymongo
-from pymongo import MongoClient
 import json
-from dotenv import load_dotenv
-from bson import ObjectId
-from mindee import Client, PredictResponse, product # To access mindee OCR API
-
 import logging
+import os
+
+from bson import ObjectId
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
+from mindee import Client, PredictResponse, product
+import pymongo
+import requests
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-# Use receipt-OCR.py to get response1.json
-# (can only do this a couple times an hour with the test API key)
-
-# Load response1.json
-with open("response1.json", "r") as f:
-    data = json.load(f)
-
-print('Receipt Keys:', data['receipts'][0].keys())
-items = data['receipts'][0]['items']
-print()
-print(f"Your purchase at {data['receipts'][0]['merchant_name']}")
-
-for item in items:
-    print(f"{item['description']} - {data['receipts'][0]['currency']} {item['amount']}")
-print("-" * 20)
-print(f"Subtotal: {data['receipts'][0]['currency']} {data['receipts'][0]['subtotal']}")
-print(f"Tax: {data['receipts'][0]['currency']} {data['receipts'][0]['tax']}")
-print("-" * 20)
-print(f"Total: {data['receipts'][0]['currency']} {data['receipts'][0]['total']}")
-# print(data['receipts'])
-
 
 # load credentials and configuration options from .env file
 # if you do not yet have a file named .env, make one based on the templatpip e in env.example
