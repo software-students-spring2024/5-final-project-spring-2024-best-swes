@@ -73,7 +73,7 @@
           console.error('Error:', error);
         });
     
-        // Optionally, stop the camera
+        // stop the camera
         if (videoStream) {
           const tracks = videoStream.getTracks();
           tracks.forEach(track => track.stop());
