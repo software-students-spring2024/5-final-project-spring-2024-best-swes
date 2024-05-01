@@ -9,7 +9,7 @@ from bson import ObjectId
 import json
 
 import logging
-
+d
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def call_ml_service(Object_ID):
 def home():
     return render_template('home.html')
 
-@app.route('/upload', methods=['POST'])
+@app.route('/uploadFile', methods=['POST'])
 def upload_image():
     if 'image' not in request.files:
         return jsonify({"error": "No image part"}), 400
