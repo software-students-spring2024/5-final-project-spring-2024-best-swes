@@ -19,26 +19,15 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Change to web app directory
-      run: cd web-app
-
-    - name: Install dependencies
+    - name: Install dependencies, lint, test, and build
       run: |
+        cd web-app
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Lint with pylint
-      run: |
-        pip install pylint
+        pip install pylint pytest flask_testing
         pylint --load-plugins=pylint_flask *.py
-
-    - name: Run tests
-      run: |
-        pip install pytest flask_testing
         pytest
-
-    - name: Build Docker image
-      run: docker build . --file Dockerfile
+        docker build . --file Dockerfile
 
     - name: Push Docker image
       uses: docker/build-push-action@v2

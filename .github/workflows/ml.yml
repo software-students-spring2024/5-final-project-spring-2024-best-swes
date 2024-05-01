@@ -19,18 +19,15 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Change to ML directory
-      run: cd machine-learning-client
-
-    - name: Install dependencies
+    - name: Install dependencies and test
       run: |
+        cd machine-learning-client
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Test with pytest
-      run: |
         pip install pytest
         pytest
 
     - name: Build Docker image
-      run: docker build . --file Dockerfile
+      run: |
+        cd machine-learning-client
+        docker build . --file Dockerfile
