@@ -110,7 +110,7 @@ def is_valid_uuid(uuid_to_test, version=4):
 def select_appetizers(receipt_id):
     if request.method == 'POST':
         if 'no_appetizers' in request.form and request.form['no_appetizers'] == 'none':
-            logging.debug("No appetizers selected by user.")
+            #logging.debug("No appetizers selected by user.")
             db.receipts.update_one(
                 {'_id': ObjectId(receipt_id)},
                 {'$set': {'items.$[].is_appetizer': False}}  # Reset all items to not be appetizers
@@ -118,10 +118,10 @@ def select_appetizers(receipt_id):
             return redirect(url_for('allocateitems', receipt_id=receipt_id))
 
         appetizer_ids = request.form.getlist('appetizers')
-        logging.debug(f"Received appetizer IDs: {appetizer_ids}")
+        #logging.debug(f"Received appetizer IDs: {appetizer_ids}")
 
         valid_ids = [id for id in appetizer_ids if is_valid_uuid(id)]
-        logging.debug(f"Valid appetizer IDs: {valid_ids}")
+        #logging.debug(f"Valid appetizer IDs: {valid_ids}")
         
         # First reset all items to not be appetizers
         db.receipts.update_one(
@@ -142,7 +142,7 @@ def select_appetizers(receipt_id):
             )
             selected_appetizers = db.receipts.find_one({'_id': ObjectId(receipt_id)}, {'items': 1})['items']
             selected_appetizer_details = [(item['description'], item['amount']) for item in selected_appetizers if str(item['_id']) in valid_ids]
-            logger.debug(f"Selected Appetizers: {selected_appetizer_details}")
+            #logger.debug(f"Selected Appetizers: {selected_appetizer_details}")
         else:
             db.receipts.update_one(
                 {'_id': ObjectId(receipt_id)},
@@ -175,8 +175,8 @@ def allocateitems(receipt_id):
                 allocations[item_id] = values
                 item_counts[item_id] = len(values)
                     
-        logger.debug(f"Updated allocations: {allocations}")
-        logger.debug(f"Updated item counts: {item_counts}")
+        #logger.debug(f"Updated allocations: {allocations}")
+        #logger.debug(f"Updated item counts: {item_counts}")
 
         # Store the updated allocations and counts in the database
         db.receipts.update_one(
@@ -202,45 +202,45 @@ def enter_tip(receipt_id):
 @app.route('/calculate_bill/<receipt_id>', methods=['POST'])
 def calculate_bill(receipt_id):
     try:
-        logger.debug("Starting calculation of the bill.")
+        #logger.debug("Starting calculation of the bill.")
         
         # Retrieve and validate tip percentage
         tip_percentage_input = request.form.get('tip_percentage', '').strip()
-        logger.debug(f"Received tip percentage: '{tip_percentage_input}'")
+        #logger.debug(f"Received tip percentage: '{tip_percentage_input}'")
         
         # Validate that the tip percentage is a valid float
         try:
             tip_percentage = float(tip_percentage_input) / 100
         except ValueError:
-            logger.error("Invalid tip percentage input.")
+            #logger.error("Invalid tip percentage input.")
             return jsonify({"error": "Invalid tip percentage provided"}), 400
 
         # Fetching the receipt
         receipt = db.receipts.find_one({"_id": ObjectId(receipt_id)})
         if not receipt:
-            logger.error("No receipt found.")
+            #logger.error("No receipt found.")
             return jsonify({"error": "Receipt not found"}), 404
 
         items = receipt.get('items', [])
         allocations = receipt.get('allocations', {})
         item_counts = receipt.get('item_counts', {})     
-        logger.debug(f"Allocations retrieved: {allocations}")
-        logger.debug(f"Item counts retrieved: {item_counts}")
+        #logger.debug(f"Allocations retrieved: {allocations}")
+        #logger.debug(f"Item counts retrieved: {item_counts}")
         
         # Aggregate total appetizer cost
         appetizer_items = [item for item in items if item.get('is_appetizer', False)]
-        logger.debug(f"Items marked as appetizers: {[(item['description'], item['amount']) for item in appetizer_items]}")
+        #logger.debug(f"Items marked as appetizers: {[(item['description'], item['amount']) for item in appetizer_items]}")
         
         appetizer_total = sum(item['amount'] for item in appetizer_items if item.get('is_appetizer', False))
-        logger.debug(f"Total appetizer cost: {appetizer_total}")
+        #logger.debug(f"Total appetizer cost: {appetizer_total}")
     
         tax = float(receipt.get('tax', 0.00))
         subtotal = float(receipt.get('subtotal', 0.00))
         
-        logger.debug(f"Subtotal and tax values: Subtotal={subtotal}, Tax={tax}")
+        #logger.debug(f"Subtotal and tax values: Subtotal={subtotal}, Tax={tax}")
         
         if not items or subtotal <= 0:
-            logger.error("No items found or subtotal is zero or negative.")
+            #logger.error("No items found or subtotal is zero or negative.")
             return jsonify({"error": "Invalid receipt data"}), 400
         
         payments = {name: 0 for name in receipt.get('names', [])}
@@ -248,19 +248,19 @@ def calculate_bill(receipt_id):
         num_people = len(receipt.get('names', []))
 
         if num_people == 0:
-            logger.error("Number of people is zero.")
+            #logger.error("Number of people is zero.")
             return jsonify({"error": "Number of people cannot be zero"}), 400
 
         if num_people > 0:
             appetizer_cost_per_person = appetizer_total / num_people
         else:
             appetizer_cost_per_person = 0
-        logger.debug(f"Appetizer cost per person: {appetizer_cost_per_person}")
+        #logger.debug(f"Appetizer cost per person: {appetizer_cost_per_person}")
 
         appetizer_cost_per_person = appetizer_total / num_people if num_people else 0
         for name in payments:
             payments[name] += appetizer_cost_per_person
-            logger.debug(f"Initial payment for {name}: {payments[name]}")
+            #logger.debug(f"Initial payment for {name}: {payments[name]}")
 
         # Calculate individual item costs and distribute them
         for item_id, users in allocations.items():
@@ -270,7 +270,7 @@ def calculate_bill(receipt_id):
                 cost_per_user = item['amount'] / num_users
                 for user in users:
                     payments[user] += cost_per_user
-                    logger.debug(f"Allocating ${cost_per_user:.2f} to {user} for item {item['description']}")
+                    #logger.debug(f"Allocating ${cost_per_user:.2f} to {user} for item {item['description']}")
             else:
                 logger.debug(f"Item not found for ID: {item_id}")
 
@@ -279,7 +279,7 @@ def calculate_bill(receipt_id):
 
         total_with_tax = subtotal + tax
         total_with_tip = total_with_tax * (1 + tip_percentage)
-        logger.debug(f"Total with tax: {total_with_tax}, Total with tip: {total_with_tip}")
+        #logger.debug(f"Total with tax: {total_with_tax}, Total with tip: {total_with_tip}")
 
         # Apply tax and tip proportionally
         total_payment = 0
@@ -288,7 +288,7 @@ def calculate_bill(receipt_id):
             final_payment = payment + (total_with_tax - subtotal) * person_share_before_tax + (total_with_tip - total_with_tax) * person_share_before_tax
             payments[name] = round(final_payment, 2)
             total_payment += payments[name]
-            logger.debug(f"Final payment for {name}: {payments[name]}")
+            #logger.debug(f"Final payment for {name}: {payments[name]}")
 
         db.receipts.update_one({"_id": ObjectId(receipt_id)}, {'$set': {'payments': payments}})
         

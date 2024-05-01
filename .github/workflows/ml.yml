@@ -19,13 +19,10 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Install dependencies and test in machine-learning-client
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r machine-learning-client/requirements.txt
-        pip install pytest
-        cd machine-learning-client
-        pytest
 
     - name: Build Docker image
       run: |

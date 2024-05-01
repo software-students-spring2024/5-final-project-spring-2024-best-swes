@@ -4,4 +4,3 @@ black
 requests
 Flask
 python-dotenv
-mindee
