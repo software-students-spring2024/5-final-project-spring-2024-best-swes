@@ -17,7 +17,7 @@
     </div>
   
     <div id="form-container" style="text-align: center; margin-top: 20px;">
-      <form action="/upload" method="post" enctype="multipart/form-data">
+      <form action="/uploadFile" method="post" enctype="multipart/form-data">
           <label for="image">Upload Receipt:</label>
           <input type="file" accept="image/*" capture="camera" id="image" name="image">
           <button type="submit">Upload Receipt</button>
@@ -55,7 +55,7 @@
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           const imageData = canvas.toDataURL("image/jpeg");
 
-          fetch('/upload', {
+          fetch('/uploadCamera', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
