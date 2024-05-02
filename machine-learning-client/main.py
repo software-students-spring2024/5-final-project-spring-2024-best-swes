@@ -1,40 +1,17 @@
-import os
-from flask import Flask, request, jsonify
-import requests
-import pymongo
-from pymongo import MongoClient
 import json
-from dotenv import load_dotenv
-from bson import ObjectId
-from mindee import Client, PredictResponse, product # To access mindee OCR API
-import uuid
-
 import logging
+import os
+
+from bson import ObjectId
+from dotenv import load_dotenv
+from flask import Flask, jsonify, request
+from mindee import Client, PredictResponse, product
+import pymongo
+import requests
+
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-# Use receipt-OCR.py to get response1.json
-# (can only do this a couple times an hour with the test API key)
-
-# Load response1.json
-with open("response1.json", "r") as f:
-    data = json.load(f)
-
-print('Receipt Keys:', data['receipts'][0].keys())
-items = data['receipts'][0]['items']
-print()
-print(f"Your purchase at {data['receipts'][0]['merchant_name']}")
-
-for item in items:
-    print(f"{item['description']} - {data['receipts'][0]['currency']} {item['amount']}")
-print("-" * 20)
-print(f"Subtotal: {data['receipts'][0]['currency']} {data['receipts'][0]['subtotal']}")
-print(f"Tax: {data['receipts'][0]['currency']} {data['receipts'][0]['tax']}")
-print("-" * 20)
-print(f"Total: {data['receipts'][0]['currency']} {data['receipts'][0]['total']}")
-# print(data['receipts'])
-
 
 # load credentials and configuration options from .env file
 # if you do not yet have a file named .env, make one based on the templatpip e in env.example
@@ -83,7 +60,7 @@ def pretdict_endpoint():
     receipt_data = {
         'receipt_name': receipt['supplier_name']['raw_value'],
         'currency': receipt['locale']['currency'],
-        'items': [{'description': item['description'], 'amount': item['amount'], '_id': str(uuid.uuid4())} for item in receipt['items']],# generate a unique ID for each item
+        'items': [{'description': item['description'], 'amount': item['total_amount'], 'quantity': item['quantity']} for item in receipt['line_items']],
         'total': receipt['total_amount']['value'],
         'tax': receipt['total_tax']['value'],
         'tip': receipt['tip']['value'],
@@ -121,59 +98,6 @@ def perform_ocr(Object_ID):
         print("Type of response: ", type(response))
         print("response.text: %s", response.text)
         return response.json()
-
-# def perform_ocr(Object_ID):
-#     logging.debug("starting perform_ocr function with mindee api...") # debug
-#     # Init a new client
-#     api_key = os.getenv("OCR_API_KEY")  # Get the API key from environment variable
-#     mindee_client = Client(api_key)
-
-#     # Fetch the image data from the database
-#     image_data = db.receipts.find_one({"_id": Object_ID})['image']
-#     file_path = f"receipt_{Object_ID}.jpg"  # Set the file path to save the image
-#     logging.debug("file path: %s", file_path) # debug
-
-#     # Save the image data to a file
-#     with open(file_path, "wb") as f:
-#         f.write(image_data)
-
-#     # Load the file
-#     input_doc = mindee_client.source_from_path(file_path)
-
-#     # Parse the file with the Mindee API
-#     result: PredictResponse = mindee_client.parse(product.ReceiptV5, input_doc)
-#     logging.debug("result: %s", result.document) # debug
-
-#     # Return the result as a JSON response
-#     return jsonify(result.document)
-
-# def perform_ocr_old_version(Object_ID):
-#     logging.debug("starting perform_ocr function...") # debug
-#     url = "https://ocr.asprise.com/api/v1/receipt"
-#     image_data = db.receipts.find_one({"_id": Object_ID})['image']
-#     file_path = f"receipt_{Object_ID}.jpg"  # Set the file path to save the image
-#     logging.debug("file path: %s", file_path) # debug
-#     with open(file_path, "wb") as f:
-#         f.write(image_data)
-#     file_path = file_path.replace('\x00', '')  # Remove any null bytes from the file path
-
-
-#     # Get response (can only do this a couple times with the test API key)
-#     res = requests.post(url, 
-#                         data = {
-#                             'api_key': 'TEST',
-#                             'recognizer': 'auto',
-#                             'ref_no': 'ocr_python_123'
-#                         },
-
-#                         files = {
-#                             'file': open(file_path, "rb")
-#                         })
-
-#     with open("response.json", "w") as f:
-#         f.write(res.text)
-    
-#     return res.json()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)  # Run the app
