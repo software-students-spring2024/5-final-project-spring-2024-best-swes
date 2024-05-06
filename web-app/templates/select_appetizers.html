@@ -3,31 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Select Appetizers</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const noneCheckbox = document.getElementById('no_appetizers');
+            const appetizerCheckboxes = document.querySelectorAll('input[name="appetizers"]');
+            
+            // Disable other checkboxes when 'None' is selected
+            noneCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    appetizerCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                        checkbox.disabled = true;
+                    });
+                } else {
+                    appetizerCheckboxes.forEach(checkbox => {
+                        checkbox.disabled = false;
+                    });
+                }
+            });
+
+            // Disable 'None' checkbox if any appetizer is selected
+            appetizerCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (Array.from(appetizerCheckboxes).some(cb => cb.checked)) {
+                        noneCheckbox.checked = false;
+                        noneCheckbox.disabled = true;
+                    } else {
+                        noneCheckbox.disabled = false;
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Select Appetizers</h1>
-    <form method="post">
+    <form method="post" onsubmit="return checkSelection();">
         <div>
-            <input type="checkbox" name="no_appetizers" id="no_appetizers" value="none" onclick="deselectOthers();">
+            <input type="checkbox" name="no_appetizers" id="no_appetizers" value="none">
             <label for="no_appetizers">None</label>
         </div>
         {% for item in items %}
         <div>
-            <input type="checkbox" name="appetizers" value="{{ item['_id'] }}" {% if item.get('is_appetizer', False) %} checked {% endif %}>
-            <label>{{ item['description'] }}</label>
+            <input type="checkbox" id="appetizer-{{ item['_id'] }}" name="appetizers" value="{{ item['_id'] }}" {% if item.get('is_appetizer', False) %} checked {% endif %}>
+            <label for="appetizer-{{ item['_id'] }}">{{ item['description'] }} - ${{ "%.2f"|format(item['amount']) }}</label>
         </div>
         {% endfor %}
         <input type="submit" value="Submit">
     </form>
     <script>
-        function deselectOthers() {
+        function checkSelection() {
             const noneCheckbox = document.getElementById('no_appetizers');
             const appetizerCheckboxes = document.querySelectorAll('input[name="appetizers"]');
-            if (noneCheckbox.checked) {
-                appetizerCheckboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
+            if (!noneCheckbox.checked && !Array.from(appetizerCheckboxes).some(cb => cb.checked)) {
+                noneCheckbox.checked = true; // Treat as if 'None' was selected if no other item is selected
             }
+            return true;
         }
     </script>
 </body>

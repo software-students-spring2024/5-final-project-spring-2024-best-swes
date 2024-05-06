@@ -1,0 +1,39 @@
+name: Web App CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: List contents in web-app directory
+      run: ls -la web-app/
+
+    - name: Install dependencies, lint, test, and build in web-app
+      run: |
+        cd web-app
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pylint pytest flask_testing
+        pylint --load-plugins=pylint_flask *.py
+        pytest
+        docker build . --file Dockerfile
+
+    - name: Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: user/app:latest

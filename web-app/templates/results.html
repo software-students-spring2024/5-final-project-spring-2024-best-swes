@@ -17,6 +17,10 @@
             <td>${{ "%.2f"|format(amount) }}</td>
         </tr>
         {% endfor %}
+        <tr>
+            <th>Total</th>
+            <th>${{ "%.2f"|format(total_payment) }}</th>
+        </tr>
     </table>
     <a href="/">Return Home</a>
 </body>
