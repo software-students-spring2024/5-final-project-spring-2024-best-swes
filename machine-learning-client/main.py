@@ -119,7 +119,26 @@ def perform_ocr(Object_ID):
         response = requests.post(url, files=files, headers=headers)
         print("Type of response: ", type(response))
         print("response.text: %s", response.text)
-        return response.json()
+        
+        response_json = json.loads(response.text)
+        
+        # Debug Prints
+        print("response.json(): %s", response_json)
+        receipt = response['document']['inference']['pages'][0]['prediction']
+        print('OCR Json Keys:', data['document']['inference']['pages'][0]['prediction'].keys())
+        receipt_data = {
+            'receipt_name': receipt['supplier_name']['raw_value'],
+            'currency': receipt['locale']['currency'],
+            'items': [{'description': item['description'], 'amount': item['total_amount'], 'quantity': item['quantity']} for item in receipt['line_items']],
+            'total': receipt['total_amount']['value'],
+            'tax': receipt['total_tax']['value'],
+            'tip': receipt['tip']['value'],
+            'subtotal': receipt['total_net']['value'],
+        }
+        logging.debug(receipt_data)
+        print("receipt_data: %s", receipt_data)
+        
+        return response_json
 
 # def perform_ocr(Object_ID):
 #     logging.debug("starting perform_ocr function with mindee api...") # debug
