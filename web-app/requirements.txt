@@ -6,3 +6,4 @@ pytest
 coverage
 python-dotenv
 requests
+logger
